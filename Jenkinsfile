@@ -42,7 +42,7 @@ podTemplate(label: 'meltingpoc-build-pod', nodeSelector: 'medium', containers: [
 
                     sh 'ls -la build/libs'
 
-                    sh 'docker build -t registry.wildwidewest.xyz/repository/docker-repository/pocs/meltingpoc-gateway .'
+                    sh 'docker build -t registry.wildwidewest.xyz/repository/docker-repository/pocs/meltingpoc-api-gateway .'
 
                     sh 'mkdir /etc/docker'
 
@@ -55,7 +55,7 @@ podTemplate(label: 'meltingpoc-build-pod', nodeSelector: 'medium', containers: [
                          sh "docker login -u admin -p ${NEXUS_PWD} registry.wildwidewest.xyz"
                     }
 
-                    sh 'docker push registry.wildwidewest.xyz/repository/docker-repository/pocs/meltingpoc-gateway'
+                    sh 'docker push registry.wildwidewest.xyz/repository/docker-repository/pocs/meltingpoc-api-gateway'
                 }
         }
 
