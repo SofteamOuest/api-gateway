@@ -66,7 +66,7 @@ podTemplate(label: 'meltingpoc-build-pod', nodeSelector: 'medium', containers: [
                 //sh 'kubectl delete ing meltingpoc'
                 //sh 'kubectl delete svc meltingpoc'
                 //sh 'kubectl delete deployment meltingpoc'
-                //sh 'kubectl apply -f src/main/kubernetes/meltingpoc.yml'
+                sh 'kubectl apply -f src/main/kubernetes/meltingpoc-api-gateway.yml'
 
             }
         }
