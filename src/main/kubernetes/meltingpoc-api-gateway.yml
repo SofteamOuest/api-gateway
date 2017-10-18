@@ -1,17 +1,17 @@
 apiVersion: apps/v1beta1
 kind: Deployment
 metadata:
-  name: meltingpoc
+  name: meltingpoc-api-gateway
 spec:
   replicas: 1
   template:
     metadata:
      labels:
-        app: meltingpoc
+        app: meltingpoc-api-gateway
     spec:
       containers:
-      - name: meltingpoc-gateway
-        image: registry.wildwidewest.xyz/repository/docker-repository/pocs/meltingpoc-gateway
+      - name: meltingpoc-api-gateway
+        image: registry.wildwidewest.xyz/repository/docker-repository/pocs/meltingpoc-api-gateway
         ports:
         - containerPort: 8080
       imagePullSecrets:
@@ -20,10 +20,10 @@ spec:
 kind: Service
 apiVersion: v1
 metadata:
-  name: meltingpoc-gateway
+  name: meltingpoc-api-gateway
 spec:
   selector:
-    app: meltingpoc-gateway
+    app: meltingpoc-api-gateway
   ports:
     - protocol: TCP
       port: 80
@@ -32,15 +32,15 @@ spec:
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: meltingpoc-gateway
+  name: meltingpoc-api-gateway
   annotations:
     kubernetes.io/ingress.class: traefik
     traefik.frontend.rule.type: PathPrefixStrip
 spec:
   rules:
-  - host: meltingpoc-gateway.k8.wildwidewest.xyz
+  - host: meltingpoc-api.k8.wildwidewest.xyz
     http:
       paths:
       - backend:
-          serviceName: meltingpoc-gateway
+          serviceName: meltingpoc-api-gateway
           servicePort: 80
