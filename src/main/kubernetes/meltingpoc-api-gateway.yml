@@ -38,7 +38,7 @@ metadata:
     traefik.frontend.rule.type: PathPrefixStrip
 spec:
   rules:
-  - host: meltingpoc-api.k8.wildwidewest.xyz
+  - host: meltingpoc.k8.wildwidewest.xyz
     http:
       paths:
       - backend:
