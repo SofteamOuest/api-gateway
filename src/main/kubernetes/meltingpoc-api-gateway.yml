@@ -37,8 +37,6 @@ metadata:
     kubernetes.io/ingress.class: traefik
     traefik.frontend.rule.type: PathPrefixStrip
 spec:
-  tls:
-    - secretName: traefik-cert
   rules:
   - host: meltingpoc.k8.wildwidewest.xyz
     http:
