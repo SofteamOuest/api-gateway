@@ -1,6 +1,6 @@
 FROM java:8
 
-MAINTAINER mehdi.elkouhen@softeam.fr
+MAINTAINER mehdi.elkouhen@gmail.com
 
 WORKDIR /apps/api-gateway
 
