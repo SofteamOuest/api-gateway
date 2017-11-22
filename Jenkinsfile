@@ -35,6 +35,8 @@ podTemplate(label: 'meltingpoc-api-gateway-pod', nodeSelector: 'medium', contain
                 )
             ])
 
+        def now = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date())
+
         stage('checkout sources'){
             checkout scm;
         }
@@ -53,7 +55,7 @@ podTemplate(label: 'meltingpoc-api-gateway-pod', nodeSelector: 'medium', contain
 
                     sh 'ls -la build/libs'
 
-                    sh 'docker build -t registry.wildwidewest.xyz/repository/docker-repository/pocs/meltingpoc-api-gateway .'
+                    sh "docker build -t registry.wildwidewest.xyz/repository/docker-repository/pocs/meltingpoc-api-gateway:$now ."
 
                     sh 'mkdir /etc/docker'
 
@@ -61,12 +63,11 @@ podTemplate(label: 'meltingpoc-api-gateway-pod', nodeSelector: 'medium', contain
                     sh 'echo {"insecure-registries" : ["registry.wildwidewest.xyz"]} > /etc/docker/daemon.json'
 
                     withCredentials([string(credentialsId: 'nexus_password', variable: 'NEXUS_PWD')]) {
-                         echo "My password is '${NEXUS_PWD}'!"
 
                          sh "docker login -u admin -p ${NEXUS_PWD} registry.wildwidewest.xyz"
                     }
 
-                    sh 'docker push registry.wildwidewest.xyz/repository/docker-repository/pocs/meltingpoc-api-gateway'
+                    sh "docker push registry.wildwidewest.xyz/repository/docker-repository/pocs/meltingpoc-api-gateway:$now"
                 }
         }
 
@@ -74,10 +75,9 @@ podTemplate(label: 'meltingpoc-api-gateway-pod', nodeSelector: 'medium', contain
 
             stage('deploy'){
 
-                sh 'kubectl delete ing meltingpoc-api-gateway'
-                sh 'kubectl delete svc meltingpoc-api-gateway'
-                sh 'kubectl delete deployment meltingpoc-api-gateway'
-                sh 'kubectl apply -f src/main/kubernetes/meltingpoc-api-gateway.yml'
+                build job: "api-gateway-run/master",
+                                  wait: false,
+                                  parameters: [[$class: 'StringParameterValue', name: 'image', value: "$now"]]
 
             }
         }
