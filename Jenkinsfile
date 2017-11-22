@@ -2,7 +2,7 @@
 import java.text.SimpleDateFormat
 
 // pod utilisé pour la compilation du projet
-podTemplate(label: 'meltingpoc-build-pod', nodeSelector: 'medium', containers: [
+podTemplate(label: 'meltingpoc-api-gateway-pod', nodeSelector: 'medium', containers: [
 
         // le slave jenkins
         containerTemplate(name: 'jnlp', image: 'jenkinsci/jnlp-slave:alpine'),
