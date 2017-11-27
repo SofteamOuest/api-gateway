@@ -55,19 +55,19 @@ podTemplate(label: 'meltingpoc-api-gateway-pod', nodeSelector: 'medium', contain
 
                     sh 'ls -la build/libs'
 
-                    sh "docker build -t registry.wildwidewest.xyz/repository/docker-repository/pocs/meltingpoc-api-gateway:$now ."
+                    sh "docker build -t registry.k8.wildwidewest.xyz/repository/docker-repository/pocs/meltingpoc-api-gateway:$now ."
 
                     sh 'mkdir /etc/docker'
 
                     // le registry est insecure (pas de https)
-                    sh 'echo {"insecure-registries" : ["registry.wildwidewest.xyz"]} > /etc/docker/daemon.json'
+                    sh 'echo {"insecure-registries" : ["registry.k8.wildwidewest.xyz"]} > /etc/docker/daemon.json'
 
                     withCredentials([string(credentialsId: 'nexus_password', variable: 'NEXUS_PWD')]) {
 
-                         sh "docker login -u admin -p ${NEXUS_PWD} registry.wildwidewest.xyz"
+                         sh "docker login -u admin -p ${NEXUS_PWD} registry.k8.wildwidewest.xyz"
                     }
 
-                    sh "docker push registry.wildwidewest.xyz/repository/docker-repository/pocs/meltingpoc-api-gateway:$now"
+                    sh "docker push registry.k8.wildwidewest.xyz/repository/docker-repository/pocs/meltingpoc-api-gateway:$now"
                 }
         }
 
