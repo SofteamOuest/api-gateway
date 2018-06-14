@@ -77,7 +77,7 @@ podTemplate(label: 'meltingpoc-api-gateway-pod', nodeSelector: 'medium', contain
 
             stage('deploy') {
 
-                build job: "./api-gateway-run/master",
+                build job: "/Softeam Ouest/api-gateway-run/master",
                         wait: false,
                         parameters: [[$class: 'StringParameterValue', name: 'image', value: "$now"]]
 
