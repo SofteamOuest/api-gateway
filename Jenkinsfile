@@ -60,7 +60,7 @@ podTemplate(label: 'meltingpoc-api-gateway-pod', nodeSelector: 'medium', contain
                 sh 'mkdir /etc/docker'
 
                 // le registry est insecure (pas de https)
-                sh 'echo {"insecure-registries" : ["registry.k8.wildwidewest.xyz"]} > /etc/docker/daemon.json'
+                sh 'echo {"insecure-registries" : ["registry"]} > /etc/docker/daemon.json'
 
                 withCredentials([string(credentialsId: 'nexus_password', variable: 'NEXUS_PWD'),
                                  string(credentialsId: 'registry_url', variable: 'REGISTRY_URL')]) {
