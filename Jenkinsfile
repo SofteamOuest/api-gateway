@@ -52,8 +52,6 @@ podTemplate(label: 'meltingpoc-api-gateway-pod', nodeSelector: 'medium', contain
 
             stage('build docker image') {
 
-
-
                 sh 'mkdir /etc/docker'
 
                 // le registry est insecure (pas de https)
@@ -62,8 +60,7 @@ podTemplate(label: 'meltingpoc-api-gateway-pod', nodeSelector: 'medium', contain
                 withCredentials([string(credentialsId: 'nexus_password', variable: 'NEXUS_PWD'),
                                  string(credentialsId: 'registry_url', variable: 'REGISTRY_URL')]) {
 
-                    sh "docker login -u admin -p ${NEXUS_PWD} ${REGISTRY_URL}"
-
+                    sh "docker login -u admin -p ${NEXUS_PWD} registry.k8.wildwidewest.xyz"
                 }
 
                 sh "docker build -t registry.k8.wildwidewest.xyz/repository/docker-repository/pocs/meltingpoc-api-gateway:$now ."
@@ -76,11 +73,7 @@ podTemplate(label: 'meltingpoc-api-gateway-pod', nodeSelector: 'medium', contain
 
             stage('deploy') {
 
-                build job: "/SofteamOuest/chart-run/master",
-                        wait: false,
-                        parameters: [[$class: 'StringParameterValue', name: 'image', value: "$now",
-                                $class: 'StringParameterValue', name: 'chart', value: "api-gateway"]]
-
+                build job: '/SOFTEAMOUEST/chart-run/master', parameters: [string(name: 'image', value: "$now"), string(name: 'chart', value: "api-gateway")], wait: false
             }
         }
     }
