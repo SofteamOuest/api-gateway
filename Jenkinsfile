@@ -11,7 +11,7 @@ podTemplate(label: 'meltingpoc-api-gateway-pod', nodeSelector: 'medium', contain
         containerTemplate(name: 'gradle', image: 'elkouhen/gradle-docker', privileged: true, ttyEnabled: true, command: 'cat'),
 
         // un conteneur pour construire les images docker
-        containerTemplate(name: 'docker', image: 'docker', command: 'cat', ttyEnabled: true),
+        containerTemplate(name: 'docker', image: 'tmaier/docker-compose', command: 'cat', ttyEnabled: true),
 
         // un conteneur pour déployer les services kubernetes
         containerTemplate(name: 'kubectl', image: 'lachlanevenson/k8s-kubectl', command: 'cat', ttyEnabled: true)],
@@ -57,15 +57,14 @@ podTemplate(label: 'meltingpoc-api-gateway-pod', nodeSelector: 'medium', contain
                 // le registry est insecure (pas de https)
                 sh 'echo {"insecure-registries" : ["registry.k8.wildwidewest.xyz"]} > /etc/docker/daemon.json'
 
-                withCredentials([string(credentialsId: 'nexus_password', variable: 'NEXUS_PWD'),
-                                 string(credentialsId: 'registry_url', variable: 'REGISTRY_URL')]) {
+                withCredentials([string(credentialsId: 'nexus_password', variable: 'NEXUS_PWD')]) {
 
                     sh "docker login -u admin -p ${NEXUS_PWD} registry.k8.wildwidewest.xyz"
                 }
 
-                sh "docker build -t registry.k8.wildwidewest.xyz/repository/docker-repository/pocs/meltingpoc-api-gateway:$now ."
-                sh "docker push registry.k8.wildwidewest.xyz/repository/docker-repository/pocs/meltingpoc-api-gateway:$now"
+                sh "tag=$now docker-compose build"
 
+                sh "tag=$now docker-compose push"
             }
         }
 
@@ -73,7 +72,10 @@ podTemplate(label: 'meltingpoc-api-gateway-pod', nodeSelector: 'medium', contain
 
             stage('deploy') {
 
-                build job: '/SOFTEAMOUEST/chart-run/master', parameters: [string(name: 'image', value: "$now"), string(name: 'chart', value: "api-gateway")], wait: false
+                build job: "/SofteamOuest/chart-run/master",
+                        wait: false,
+                        parameters: [string(name: 'image', value: "$now"),
+                                        string(name: 'chart', value: "api-gateway")]
             }
         }
     }
