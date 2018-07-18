@@ -38,7 +38,7 @@ podTemplate(label: 'meltingpoc-api-gateway-pod', nodeSelector: 'medium', contain
         def now = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date())
 
         stage('checkout sources') {
-            checkout scm;
+            checkout scm
         }
 
         container('gradle') {
@@ -53,22 +53,21 @@ podTemplate(label: 'meltingpoc-api-gateway-pod', nodeSelector: 'medium', contain
             stage('build docker image') {
 
 
-                sh 'ls -la build/libs'
-
-                sh "docker build -t registry.k8.wildwidewest.xyz/repository/docker-repository/pocs/meltingpoc-api-gateway:$now ."
 
                 sh 'mkdir /etc/docker'
 
                 // le registry est insecure (pas de https)
-                sh 'echo {"insecure-registries" : ["registry"]} > /etc/docker/daemon.json'
+                sh 'echo {"insecure-registries" : ["registry.k8.wildwidewest.xyz"]} > /etc/docker/daemon.json'
 
                 withCredentials([string(credentialsId: 'nexus_password', variable: 'NEXUS_PWD'),
                                  string(credentialsId: 'registry_url', variable: 'REGISTRY_URL')]) {
 
                     sh "docker login -u admin -p ${NEXUS_PWD} ${REGISTRY_URL}"
-                    sh "docker push ${REGISTRY_URL}/repository/docker-repository/pocs/meltingpoc-api-gateway:$now"
+
                 }
 
+                sh "docker build -t registry.k8.wildwidewest.xyz/repository/docker-repository/pocs/meltingpoc-api-gateway:$now ."
+                sh "docker push ${REGISTRY_URL}/repository/docker-repository/pocs/meltingpoc-api-gateway:$now"
 
             }
         }
