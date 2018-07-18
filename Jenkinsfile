@@ -67,7 +67,7 @@ podTemplate(label: 'meltingpoc-api-gateway-pod', nodeSelector: 'medium', contain
                 }
 
                 sh "docker build -t registry.k8.wildwidewest.xyz/repository/docker-repository/pocs/meltingpoc-api-gateway:$now ."
-                sh "docker push ${REGISTRY_URL}/repository/docker-repository/pocs/meltingpoc-api-gateway:$now"
+                sh "docker push registry.k8.wildwidewest.xyz/repository/docker-repository/pocs/meltingpoc-api-gateway:$now"
 
             }
         }
