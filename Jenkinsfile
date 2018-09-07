@@ -52,20 +52,19 @@ podTemplate(label: 'meltingpoc-api-gateway-pod', nodeSelector: 'medium', contain
 
             stage('build docker image') {
 
-                sh 'mkdir /etc/docker'
+                    sh 'mkdir /etc/docker'
 
-                // le registry est insecure (pas de https)
-                sh 'echo {"insecure-registries" : ["registry.k8.wildwidewest.xyz"]} > /etc/docker/daemon.json'
+                    // le registry est insecure (pas de https)
+                    sh 'echo {"insecure-registries" : ["registry.k8.wildwidewest.xyz"]} > /etc/docker/daemon.json'
 
-                withCredentials([string(credentialsId: 'nexus_password', variable: 'NEXUS_PWD'),
-                                 string(credentialsId: 'registry_url', variable: 'REGISTRY_URL')]) {
+                    withCredentials([usernamePassword(credentialsId: 'nexus_user', usernameVariable: 'username', passwordVariable: 'password')]) {
 
-                    sh "docker login -u admin -p ${NEXUS_PWD} registry.k8.wildwidewest.xyz"
-                }
+                         sh "docker login -u ${username} -p ${password} registry.k8.wildwidewest.xyz"
+                    }
 
-                sh "docker build -t registry.k8.wildwidewest.xyz/repository/docker-repository/pocs/meltingpoc-api-gateway:$now ."
-                sh "docker push registry.k8.wildwidewest.xyz/repository/docker-repository/pocs/meltingpoc-api-gateway:$now"
+                    sh "tag=$now docker-compose build"
 
+                    sh "tag=$now docker-compose push"
             }
         }
 
