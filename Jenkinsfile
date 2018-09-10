@@ -37,20 +37,20 @@ podTemplate(label: 'meltingpoc-api-gateway-pod', nodeSelector: 'medium', contain
 
         def now = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date())
 
-        stage('checkout sources') {
+        stage('CHECKOUT') {
             checkout scm
         }
 
         container('gradle') {
 
-            stage('build sources') {
+            stage('BUILD SOURCES') {
                 sh 'gradle clean build'
             }
         }
 
         container('docker') {
 
-            stage('build docker image') {
+            stage('BUILD DOCKER IMAGE') {
 
                     sh 'mkdir /etc/docker'
 
@@ -70,7 +70,7 @@ podTemplate(label: 'meltingpoc-api-gateway-pod', nodeSelector: 'medium', contain
 
         container('kubectl') {
 
-            stage('deploy') {
+            stage('RUN') {
 
                 build job: '/SOFTEAMOUEST/chart-run/master', parameters: [
                     string(name: 'image', value: "$now"), 
